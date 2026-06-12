@@ -118,46 +118,48 @@
     </div>
 </div>
 
+
+</body>
+</html>
 <script>
-    async function analizarTexto() {
-        const textInput = document.getElementById('textInput').value.trim();
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const resultCard = document.getElementById('resultCard');
-        const resultDiv = document.getElementById('result');
+  async function analizarTexto() {
+    const textInput = document.getElementById('textoInput').value;
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const resultCard = document.getElementById('resultCard');
+    const resultDiv = document.getElementById('result');
 
-        if (!textInput) {
-            alert('Por favor, ingresá un texto para poder analizarlo.');
-            return;
-        }
-
-        analyzeBtn.disabled = true;
-        analyzeBtn.innerText = 'Analizando con Gemini...';
-        resultCard.style.display = 'block';
-        resultDiv.innerHTML = '<p class="loading">Iniciando conexión segura... Procesando texto...</p>';
-
-        try {
-            // El backend de Vercel interceptará esta llamada para inyectar la API KEY de forma segura
-            const response = await fetch('/api/analyze.js', {
-                method: 'POST',
-                headers: { '腔ontent-Type': 'application/json' },
-                body: JSON.stringify({ texto: textInput })
-            });
-
-            const data = await response.json();
-            
-            if (response.ok && data.resultado) {
-                resultDiv.innerText = data.resultado;
-            } else {
-                resultDiv.innerText = 'Error del sistema: ' + (data.error || 'No se pudo obtener respuesta.');
-            }
-        } catch (error) {
-            // Modo de respaldo local directo por si la API se consume del lado del cliente
-            resultDiv.innerText = 'Conectando directo con la base del Analizador TDT...\n\n[Prueba de conexión exitosa]\nEl sistema está listo. En el próximo paso enlazamos el procesamiento teológico.';
-        } finally {
-            analyzeBtn.disabled = false;
-            analyzeBtn.innerText = 'Iniciar Análisis TDT';
-        }
+    if (!textInput) {
+      alert('Por favor, ingresá un texto o versículo.');
+      return;
     }
+
+    analyzeBtn.disabled = true;
+    analyzeBtn.innerText = 'Analizando con Gemini...';
+    resultCard.style.display = 'block';
+    resultDiv.innerHTML = '<p class="loading">Analizando el texto con Inteligencia Artificial doctrinal...</p>';
+
+    try {
+      const response = await fetch('/api/analyze.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texto: textInput })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.resultado) {
+        resultDiv.innerText = data.resultado;
+      } else {
+        resultDiv.innerText = 'Error del sistema: ' + (data.error || 'No se recibió respuesta.');
+      }
+
+    } catch (error) {
+      resultDiv.innerText = 'Error de red: No se pudo conectar con el analizador.';
+    } finally {
+      analyzeBtn.disabled = false;
+      analyzeBtn.innerText = 'Iniciar Análisis TDT';
+    }
+  }
 </script>
 
 </body>
