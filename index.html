@@ -137,7 +137,7 @@
 
         try {
             // El backend de Vercel interceptará esta llamada para inyectar la API KEY de forma segura
-            const response = await fetch('/api/analyze', {
+            const response = await fetch('/api/analyze.js', {
                 method: 'POST',
                 headers: { '腔ontent-Type': 'application/json' },
                 body: JSON.stringify({ texto: textInput })
