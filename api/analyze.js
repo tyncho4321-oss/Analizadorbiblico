@@ -33,10 +33,7 @@ export default async function handler(req, res) {
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: [
-        { role: 'system', parts: [{ text: promptSistema }] },
-        { role: 'user', parts: [{ text: `Analizá el siguiente texto o cita: ${texto}` }] }
-      ]
+      contents: `${promptSistema}\n\nAnalizá el siguiente texto o cita: ${texto}`
     });
 
     const resultadoTexto = response.text || "No se pudo generar el análisis.";
