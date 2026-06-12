@@ -1,30 +1,16 @@
-export const config = {
-  runtime: 'edge',
-};
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export default async function handler(req) {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type': 'application/json'
-  };
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') {
-    return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
-  }
-
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Método no permitido' }), { status: 405, headers });
-  }
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
   try {
-    const { texto } = await req.json();
-    if (!texto) {
-      return new Response(JSON.stringify({ error: 'Falta el texto' }), { status: 400, headers });
-    }
+    const { texto } = req.body;
+    if (!texto) return res.status(400).json({ error: 'Falta el texto' });
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -33,10 +19,9 @@ export default async function handler(req) {
     const result = await model.generateContent(prompt);
     const respuesta = await result.response;
 
-    return new Response(JSON.stringify({ resultado: respuesta.text() }), { status: 200, headers });
+    return res.status(200).json({ resultado: respuesta.text() });
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500, headers });
+    return res.status(500).json({ error: error.message });
   }
 }
-
