@@ -138,7 +138,7 @@
     resultDiv.innerHTML = '<p class="loading">Analizando el texto con Inteligencia Artificial doctrinal...</p>';
 
     try {
-      const response = await fetch('/api/analyze.js', {
+      const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ texto: textInput })
